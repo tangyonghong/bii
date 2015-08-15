@@ -5,9 +5,6 @@
  * @author tangyonghong <tangyonghong@kugou.net>
  * @copyright (c) year, tangyonghong
  */
-class MyPDO {
-    
-    
-}
+
 
 ?>

@@ -14,7 +14,7 @@
  
  2   数据库的工具类 还没实现 
      理想中查询的方式  
-	 model::findAll(array('conditions'=>'','order'=>'id desc','group'=>'','columns'=>'','limit'=>'')); 
+	 model::findAll(array('conditions'=>'','order'=>'id desc','group'=>'','columns'=>'','limit'=>'','offset'=>'')); 
 	 model::find(array('conditions'=>'','order'=>'id desc','group'=>'','columns'=>'','limit'=>'1'));
 	 model::update(array(),$condition);
 	 model::delete("");

@@ -19,13 +19,10 @@ class DefaultController extends WebBaseController{
 
 
     public function actionIndex() {
-         // echo "Hello Bii Framework";
-         // echo '<br/> params is'.Bii::app()->request->getQuery('test');
-         
-         // echo '<br/>Action Name:'.$this->actionName;
-          $this->view->assign("test","bbbbbbbb");
+         Test::find(); 
+         $this->view->assign("test","bbbbbbbb");
+          
           $this->view->render();
-          print_r(explode(".", "hello.test"));
     }
 }
 

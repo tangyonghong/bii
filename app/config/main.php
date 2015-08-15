@@ -10,6 +10,7 @@ return array(
     'import'=>array(
         "app.modules.*",
         "app.extension.*",
+        "app.models.*",
     ),
     
 );
