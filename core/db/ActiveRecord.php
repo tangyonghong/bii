@@ -14,6 +14,7 @@ class MyPDO {
     
     public static $conn = array();
     public $config = array();
+    private $conn = null;
     final public static function getSingleInstance($key,$config) {
        if(!isset(self::$conn[$key])){
            self::$conn[$key] = new self($config);
@@ -24,13 +25,31 @@ class MyPDO {
     public function __construct($config) {
         //初始化参数
         $this->config = $config;
+        $this->connection();
     }
     
     public function connection(){
-       
+       $host = $this->config['host'];
+       $dbName = $this->config['dbName'];
+       $user = $this->config['user'];
+       $passwd = $this->config['password'];
+       $charset = $this->config['charset'];
+       $dsn = "mysql:host={$host};dbname={$dbName}";
+       try{
+         $pdo = new PDO($dsn,$user,$passwd); 
+       }catch(PDOException $e){
+            echo $e->getMessage();
+            exit;
+       }
+         $pdo->exec("set names $charset");
+         $this->conn = $pdo;
     }
     
-    public function execute(){
+    public function execute($sql){
+        
+    }
+    
+    public function query($sql){
         
     }
 }
