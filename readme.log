@@ -1,0 +1,27 @@
+这是第一次发布Bii框架  2015-08-15 23:43:33
+  目前解决了几个问题  在URL中传递 
+ 1  确定了 MVC中的 M和C层  
+ 2  解决了 视图的寻找以及往视图中传递参数
+ 3  写出了Widget类及widget查找视图的方法
+ 
+ 目前还有几个问题没解决
+ 1  路由的问题  支持3种路由方式 
+    通过配置不同的路由方式 根据不同的路由配置找到不同的模块和控制器
+	同时根据传递的参数和路由生成各种URL(难点)
+     params      index.php?m=home&c=default&a=index&test=a 
+     pathinfo  index.php/home/default/index.html?t=d&d=a
+	 rewrite   /home-default-index-tt-qq.html?test=d
+ 
+ 2   数据库的工具类 还没实现 
+     理想中查询的方式  
+	 model::findAll(array('conditions'=>'','order'=>'id desc','group'=>'','columns'=>'','limit'=>'')); 
+	 model::find(array('conditions'=>'','order'=>'id desc','group'=>'','columns'=>'','limit'=>'1'));
+	 model::update(array(),$condition);
+	 model::delete("");
+	 model::insert($data=array());
+	 model::count($condition);
+	 model::increment(array("id"=>1),$condition);
+	 model::multiInsert(array(array(),array()));
+	 model::querySql();
+	 model::executeSql(); getLastInsertId();
+	 解决了这2个问题 基本就没什么问题了
