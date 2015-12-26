@@ -1,22 +1,18 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of ActiveRecord
  * @author tangyonghong <tangyonghong@kugou.net>
  * @copyright (c) year, Tangyonghong
  */
-class MyPDO {
+class BiiPDO {
     
     public static $conn = array();
     public $config = array();
-    private $conn = null;
+    private $dbConn = null;
     final public static function getSingleInstance($key,$config) {
        if(!isset(self::$conn[$key])){
+           echo "开始连接数据库  <br/>";
            self::$conn[$key] = new self($config);
        }
        return self::$conn[$key];
@@ -28,7 +24,7 @@ class MyPDO {
         $this->connection();
     }
     
-    public function connection(){
+    private function connection(){
        $host = $this->config['host'];
        $dbName = $this->config['dbName'];
        $user = $this->config['user'];
@@ -36,21 +32,34 @@ class MyPDO {
        $charset = $this->config['charset'];
        $dsn = "mysql:host={$host};dbname={$dbName}";
        try{
-         $pdo = new PDO($dsn,$user,$passwd); 
+         $this->dbConn = new PDO($dsn,$user,$passwd); 
        }catch(PDOException $e){
             echo $e->getMessage();
             exit;
        }
-         $pdo->exec("set names $charset");
-         $this->conn = $pdo;
+       $this->dbConn->exec("set names $charset");
     }
     
     public function execute($sql){
+        try{
+            $res = $this->dbConn->exec($sql);
+        } catch (DbException $ex) {
+            echo $ex->getMessage();
+            exit;
+        }
         
     }
     
     public function query($sql){
-        
+        try{
+            $rs = $this->dbConn->query($sql);
+            $rs->setFetchMode(PDO::FETCH_ASSOC);
+            $result = $rs->fetchAll();
+        } catch (DbException $ex) {
+            echo $ex->getMessage();
+            exit;
+        }
+        return $result;
     }
 }
 
@@ -59,6 +68,9 @@ class ActiveRecord {
     public static $dbSet ;  //指定数据库配置  
     public static $tableName;
     public static $isReadOrWrite = 2;  //1为读库 2为写库
+    private static $sql = "";
+    private static $queryArray = array();
+
     const IS_READ = 1;
     const IS_WRITE = 2;
    
@@ -69,48 +81,61 @@ class ActiveRecord {
 
     final private static function getDbConnection(){
         $config = self::getDbConfig();
-        $key = self::$dbSet.'_'.self::$isReadOrWrite.'_'.$config['dbKey'];
-        $dbConnection = MyPDO::getSingleInstance($key, $config['config']);
+        $key = static::$dbSet.'_'.self::$isReadOrWrite.'_'.$config['dbKey'];
+        $dbConnection = BiiPDO::getSingleInstance($key, $config['config']);
         return $dbConnection; 
     }
    
     final private static function getDbConfig(){
-       $dbConfig = Bii::app()->getConfig(self::$dbSet);
+       $dbConfig = Bii::app()->getConfig(static::$dbSet);
        if(empty($dbConfig)){
            throw new DbException("请指定数据库配置!!");
        }
+       
        $dbKey = 0;
-       if(self::$isReadOrWrite==self::IS_READ){ //如果为只读
-             $dbConfig = $dbConfig['read'];
+       if(static::$isReadOrWrite==static::IS_WRITE){ //如果为只读
+             $dbConfig = $dbConfig['write'];
        }else{ 
-             $tmp = $dbConfig['write'];
-             $keySet = shuffle(array_keys($tmp));
-             $dbKey = $keySet[0];
-             $dbConfig = $tmp[$dbKey];
+             $dbKey = 1;
+             $tmp = $dbConfig['read'];
+             $readCount = count($tmp);
+             $dbConfig = $tmp[rand(0, $readCount-1)];
        }
-       return array('dbKey'=>$dbKey,'config'=>$dbConfig);;
+       
+       return array('dbKey'=>$dbKey,'config'=>$dbConfig);
     }
 
     private static function setWrite(){
-          self::$isReadOrWrite = self::IS_WRITE;
+          static::$isReadOrWrite = static::IS_WRITE;
     }
     
     private static function setRead(){
-         self::$isReadOrWrite = self::IS_READ;
+         static::$isReadOrWrite = static::IS_READ;
     }
 
-    final public static function setTableName($tableName){
-        self::$tableName = $tableName;
+     public static function setTableName($tableName){
+        static::$tableName = $tableName;
     }
     
-    final public static function findAll(Array $queryArray=array()){
+     public static function findAll(Array $queryArray=array()){
          self::setRead();
+         self::$queryArray = $queryArray;
+         self::bulidQuerySql();
+         $dbConnection = self::getDbConnection();
+         $res = $dbConnection->query(self::$sql);
+         return $res;
           
     }
     
     public static function find(Array $queryArray=array()){
          self::setRead();
-         
+         $queryArray['limit'] = 1;
+         self::$queryArray = $queryArray;
+         self::bulidQuerySql();
+         $dbConnection = self::getDbConnection();
+         $res = $dbConnection->query(self::$sql);
+         return $res;
+        
     }
     
     public static function update($updateArray,$condition=""){
@@ -144,8 +169,50 @@ class ActiveRecord {
     public static function executeSql($sql){
              self::setWrite();
      }
+     
+     private static function bulidQuerySql(){
+         self::$sql =" SELECT ";
+         if(isset(self::$queryArray['columns']) && !empty(self::$queryArray['columns'])){
+             self::$sql.= self::$queryArray['columns']."";
+         }else{
+             self::$sql.= ' * ';
+         }
+         
+         self::$sql.=" FROM ".static::$tableName." ";
+         
+         if(isset(self::$queryArray['conditions']) && !empty(self::$queryArray['conditions'])){
+             self::$sql.= " WHERE ".self::$queryArray['conditions']." ";
+         }
+         
+         
+         if(isset(self::$queryArray['group']) && !empty(self::$queryArray['group'])){
+             self::$sql.=" GROUP BY ".self::$queryArray['group'];
+         }
+         
+         if(isset(self::$queryArray['order']) && !empty(self::$queryArray['order'])){
+             self::$sql.=" ORDER BY ".self::$queryArray['order'];
+         }
+         
+         if(isset(self::$queryArray['offset']) && !isset(self::$queryArray['limit'])){
+             throw new DbException("Sql 语句中没有 limit");
+         }
+         
+         if(isset(self::$queryArray['limit']) && !empty(self::$queryArray['limit']) && !isset(self::$queryArray['offset'])){
+             self::$sql.=" Limit  ".self::$queryArray['limit'];
+         }
+         
+         if(isset(self::$queryArray['limit']) && isset(self::$queryArray['offset'])){
+             self::$sql.=" Limit  ".self::$queryArray['offset']." , ".self::$queryArray['limit'];
+         }
+         self::$sql = addslashes(self::$sql);
+     }
+     
+     public static function getQuerySql(){
+         return self::$sql;
+     }
     
     
 }
 
 ?>
+
