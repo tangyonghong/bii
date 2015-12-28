@@ -24,6 +24,15 @@ class Request {
     public function getPost($key, $defaultValue = '') {
         return isset($_POST[$key]) ? $_POST[$key] : $defaultValue;
     }
+    
+    
+    public function getServerInfo($key=''){
+         if(empty($key)){
+             return $_SERVER;
+         }else{
+             return isset($_SERVER[$key]) ? $_SERVER[$key] : "";
+         }
+    }
 
 }
 
