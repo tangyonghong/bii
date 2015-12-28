@@ -57,29 +57,24 @@ class Bii {
     
     //获取url参数 获取路由
     public function selectRoute(){
-        $module = $this->request->getQuery("m");
-        if(!$module)
-             $module = $this->getConfig("defaultModule");
+        Url::setParams();
+        $module = Url::$module;
         if(!file_exists(APP_PATH."/modules/".$module)){
              exit("此模块{$module}不存在");
         }
         
-        $controller = $this->request->getQuery("c");
-        if(!$controller)
-             $controller = $this->getConfig("defaultController");
+        $controller = Url::$controller;
         $controllerFile =  ucfirst($controller)."Controller.php";
         if(!file_exists(APP_PATH."/modules/".$module."/".$controllerFile)){
              exit("此Controller:{$controller}不存在");
         }
         
-        $action = $this->request->getQuery("a");
-        if(!$action)
-             $action = $this->getConfig("defaultAction");
+        $action = Url::$action;
         $actionName =  "action".ucfirst($action);
         $controllerClassName = ucfirst($controller)."Controller";
         $controllerObject = new $controllerClassName;
         if(!method_exists($controllerObject,$actionName)){
-             exit("$controllerClassName 不存在 {$action} 方法!");
+             exit("$controllerClassName 不存在 {$action} Action!");
         }
         
         $controllerObject->moduleName = $module;
@@ -138,3 +133,4 @@ class Bii {
 }
 
 ?>
+
