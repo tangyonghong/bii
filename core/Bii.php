@@ -57,7 +57,7 @@ class Bii {
     
     //获取url参数 获取路由
     public function selectRoute(){
-        Url::setParams();
+        Url::setParamsByUri();
         $module = Url::$module;
         if(!file_exists(APP_PATH."/modules/".$module)){
              exit("此模块{$module}不存在");

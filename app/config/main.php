@@ -12,6 +12,7 @@ return array(
         "app.extension.*",
         "app.models.*",
     ),
-    
+    'routeRule'=>'rewrite',
+    'routeConfig'=>  require __DIR__.'/route.php',
 );
 ?>

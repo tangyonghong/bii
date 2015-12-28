@@ -12,7 +12,6 @@ class BiiPDO {
     private $dbConn = null;
     final public static function getSingleInstance($key,$config) {
        if(!isset(self::$conn[$key])){
-           echo "开始连接数据库  <br/>";
            self::$conn[$key] = new self($config);
        }
        return self::$conn[$key];
@@ -53,6 +52,9 @@ class BiiPDO {
     public function query($sql){
         try{
             $rs = $this->dbConn->query($sql);
+            if(empty($rs) ){
+                exit('SQL running Error ');
+            }
             $rs->setFetchMode(PDO::FETCH_ASSOC);
             $result = $rs->fetchAll();
         } catch (DbException $ex) {

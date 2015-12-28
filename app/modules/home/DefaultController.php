@@ -10,20 +10,21 @@
  * @author tangyonghong <tangyonghong@kugou.net>
  * @copyright (c) year, Tangyonghong
  */
+class DefaultController extends WebBaseController {
 
-class DefaultController extends WebBaseController{
-    
     public function beforeAction() {
-       
+        
     }
-
 
     public function actionIndex() {
-         Test::find(); 
-         $this->view->assign("test","bbbbbbbb");
-          
-          $this->view->render();
+         $url = Url::createAbsoluteUrl(array("/home/news/show",array('site'=>'www','id'=>'100')));
+         echo $url;
+          echo '<br/>';
+         echo Url::createAbsoluteUrl(array("/home/news/list",array('site'=>'www')));
+         echo '<br/>';
+         echo Url::createAbsoluteUrl(array("/home/news/list",array('site'=>'www','page'=>10,'type'=>20,)));
     }
+
 }
 
 ?>

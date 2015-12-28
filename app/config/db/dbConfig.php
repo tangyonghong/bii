@@ -2,14 +2,14 @@
 
 //数据库配置文件
 $dbArray = array(
-    'read' => array(
+    'write' => array(
         'host' => '127.0.0.1',
         'user' => 'root',
         'password' => 'root',
         'dbName' => 'test',
         'charset' => 'utf8',
     ),
-    'write' => array(
+    'read' => array(
         //============ 写一库 =====================//
             array(
                 'host' => '127.0.0.1',

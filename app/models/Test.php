@@ -8,7 +8,7 @@
 class Test extends ActiveRecord{
     public static $dbSet = "db";
     
-    public static $tableName = "";
+    public static $tableName = "xxx";
     
     
 }
