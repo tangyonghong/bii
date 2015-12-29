@@ -4,13 +4,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
+namespace Bii\Core\Exception;
 /**
  * Description of ViewException
  * @author tangyonghong <tangyonghong@kugou.net>
  * @copyright (c) year, Tangyonghong
  */
-class ViewException extends Exception{
+class ViewException extends \Exception{
     protected $message ="";
 
 

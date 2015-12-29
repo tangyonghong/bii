@@ -10,6 +10,8 @@
  * @author tangyonghong <tangyonghong@kugou.net>
  * @copyright (c) year, Tangyonghong
  */
+namespace Bii\Core\Widget;
+
 class BWidget {
     public $viewVars = array();
     

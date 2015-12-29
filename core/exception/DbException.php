@@ -4,13 +4,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
+namespace Bii\Core\Exception;
 /**
  * Description of DbException
  * @author tangyonghong <tangyonghong@kugou.net>
  * @copyright (c) year, Tangyonghong
  */
-class DbException extends Exception{
+class DbException extends \Exception{
     protected $message ="";
 
 

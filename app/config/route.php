@@ -6,6 +6,8 @@ define('MAIN_DOMAIN', $a);
 define('DOMAIN_NAME', '.'.$b.'.'.$c);
 
 $wwwDomainName = "www".DOMAIN_NAME;
+$testDomainName = "test".DOMAIN_NAME;
+$vistorDomainName = "vistor".DOMAIN_NAME;
 
 return array(
     $wwwDomainName."/" =>'/home/default/index',
@@ -13,6 +15,8 @@ return array(
     $wwwDomainName."/news/list-<type:\d+>-<page:\d+>.html"=>"/home/news/list", // 长的Url写前面
     $wwwDomainName."/news/list.html"=>"/home/news/list",
     $wwwDomainName."/news/<id:\d+>.html"=>"/home/news/show",
+    
+    $vistorDomainName."/news/add.html"=>"/home/news/add",
 );
 
 ?>

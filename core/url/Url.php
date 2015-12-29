@@ -4,7 +4,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
+namespace Bii\Core\Url;
 /**
  * Description of Url 路由配置
  * @author tangyonghong <tangyonghong@kugou.net>
@@ -20,7 +20,7 @@ class Url {
     static $regex = "#<.*?>#";
 
     public static function setParamsByUri() {
-        $routeRule = Bii::app()->getConfig('routeRule');
+        $routeRule = \Bii\Core\Bii::app()->getConfig('routeRule');
         if (empty($routeRule)) {
             $routeRule = 'params';
         }
@@ -29,24 +29,24 @@ class Url {
         }
 
         if ($routeRule == "params") {
-            $module = Bii::app()->request->getQuery('m');
+            $module = \Bii\Core\Bii::app()->request->getQuery('m');
             if (empty($module)) {
                 self::$module = Bii::app()->getConfig('defaultModule');
             }
-            $controller = Bii::app()->request->getQuery('c');
+            $controller = \Bii\Core\Bii::app()->request->getQuery('c');
             if (empty($controller)) {
                 self::$controller = Bii::app()->getConfig('defaultController');
             }
-            $action = Bii::app()->request->getQuery('a');
+            $action = \Bii\Core\Bii::app()->request->getQuery('a');
             if (empty($action)) {
                 self::$action = Bii::app()->getConfig('defaultAction');
             }
         } else { //伪静态模式           
-            $url = Bii::app()->request->getQuery('_url');
+            $url = \Bii\Core\Bii::app()->request->getQuery('_url');
             if ($url != '/') {
                 $url = '/' . $url;
             }
-            $server = Bii::app()->request->getServerInfo('HTTP_HOST');
+            $server = \Bii\Core\Bii::app()->request->getServerInfo('HTTP_HOST');
             $wholeUrl = $server . $url;
             self::findMCA($wholeUrl);
         }
@@ -54,7 +54,7 @@ class Url {
 
     // 根据伪静态url找到对应的模块; M C A
     private static function findMCA($url) {
-        $routeConfig = Bii::app()->getConfig('routeConfig');
+        $routeConfig = \Bii\Core\Bii::app()->getConfig('routeConfig');
         foreach ($routeConfig as $route => $mca) {
             if (strpos($route, "<") === FALSE) { //如果路由配置没< >  说明是简单的路由 直接用==
                 if ($route == $url) {
@@ -97,7 +97,7 @@ class Url {
 
         if (empty(self::$mca)) {
             print_r($url . ' 404 not found');
-            ;
+            header("HTTP/1.1 404 NOT FOUND");
             exit;
         }
         $temp = explode('/', self::$mca);
@@ -108,12 +108,12 @@ class Url {
     // Url::createAbsoluteUrl(array('/home/default/index',array('id'=>5)));
     //  $wwwDomainName."/news/<id:\d+>.html"=>"/home/news/show",
     public static function createAbsoluteUrl(array $routeArray) {
-        $routeConfig = Bii::app()->getConfig('routeConfig');
+        $routeConfig = \Bii\Core\Bii::app()->getConfig('routeConfig');
         if (empty($routeArray)) {
             return '';
         }
         $mca = $routeArray[0];
-        $site = isset($routeArray[1]['site']) ? $routeArray[1]['site'] : '';
+        $site = isset($routeArray[1]['site']) ? $routeArray[1]['site'] : '';// 没有site  就返回空
         if (empty($site))
             return '';
         unset($routeArray[1]['site']);

@@ -4,13 +4,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
+namespace  Bii\Home\Controller;
+use Bii\Core\Url\Url;
 /**
  * Description of DefaultController
  * @author tangyonghong <tangyonghong@kugou.net>
  * @copyright (c) year, Tangyonghong
  */
-class DefaultController extends WebBaseController {
+class DefaultController extends \Bii\Core\Controller\WebBaseController {
 
     public function beforeAction() {
         

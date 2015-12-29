@@ -4,13 +4,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
+namespace Bii\Core\Import;
 /**
  * Description of import
  * @author tangyonghong <tangyonghong@kugou.net>
  * @copyright (c) year, Tangyonghong
  */
-class import {
+class Import {
 
     public static function loadFile($filePath) {
         if (!file_exists($filePath)) { //文件不存在 

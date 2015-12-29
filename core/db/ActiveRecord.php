@@ -1,5 +1,5 @@
 <?php
-
+namespace Bii\Core\Db;
 /**
  * Description of ActiveRecord
  * @author tangyonghong <tangyonghong@kugou.net>
@@ -89,7 +89,7 @@ class ActiveRecord {
     }
    
     final private static function getDbConfig(){
-       $dbConfig = Bii::app()->getConfig(static::$dbSet);
+       $dbConfig = \Bii\Core\Bii::app()->getConfig(static::$dbSet);
        if(empty($dbConfig)){
            throw new DbException("请指定数据库配置!!");
        }

@@ -4,7 +4,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
+namespace Bii\Core ;
 /**
  * Description of Bii
  * @author tangyonghong <tangyonghong@kugou.net>
@@ -57,22 +57,25 @@ class Bii {
     
     //获取url参数 获取路由
     public function selectRoute(){
-        Url::setParamsByUri();
-        $module = Url::$module;
+        \Bii\Core\Url\Url::setParamsByUri();
+        $module = \Bii\Core\Url\Url::$module;
         if(!file_exists(APP_PATH."/modules/".$module)){
              exit("此模块{$module}不存在");
         }
         
-        $controller = Url::$controller;
+        $controller = \Bii\Core\Url\Url::$controller;
         $controllerFile =  ucfirst($controller)."Controller.php";
         if(!file_exists(APP_PATH."/modules/".$module."/".$controllerFile)){
              exit("此Controller:{$controller}不存在");
         }
         
-        $action = Url::$action;
+        $action = \Bii\Core\Url\Url::$action;
         $actionName =  "action".ucfirst($action);
-        $controllerClassName = ucfirst($controller)."Controller";
-        $controllerObject = new $controllerClassName;
+        $controllerClassName = ucfirst($controller)."Controller";//namespace  Bii\Home\Controller;
+        $nameSpace =  "\Bii\\".ucfirst($module)."\\Controller\\";
+
+        $className = $nameSpace.$controllerClassName;
+        $controllerObject = new $className;
         if(!method_exists($controllerObject,$actionName)){
              exit("$controllerClassName 不存在 {$action} Action!");
         }
@@ -81,7 +84,7 @@ class Bii {
         $controllerObject->controllerName = $controller;
         $controllerObject->actionName = $action;
         
-        $controllerObject->view = View::getSingleInstance();
+        $controllerObject->view = \Bii\Core\View\View::getSingleInstance();
         $this->controller = $controllerObject;
         //函数回调
         try{
@@ -103,8 +106,8 @@ class Bii {
 
         //加载核心类
     private function _loadCoreFile(){
-        require_once self::$corePath.'/import/import.php';
-        import::loadFile(self::$corePath);
+        require_once self::$corePath.'/import/Import.php';
+        \Bii\Core\Import\Import::loadFile(self::$corePath);
     }
     
     //根据app下的config的import配置 加载APP目录下的文件
@@ -121,14 +124,14 @@ class Bii {
             $importPath = str_replace("app", $appPath, $v);
             $importPath = str_replace(".", "/", $importPath);
             $importPath = str_replace("*", "", $importPath);
-            import::loadFile($importPath);
+            \Bii\Core\Import\Import::loadFile($importPath);
         }
     }
     //获取URL中的参数
    
     //加载系统组件
     public function loadSystemCompoent(){
-        $this->request = new Request();
+        $this->request = new \Bii\Core\Http\Request();
     }
 }
 

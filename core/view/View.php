@@ -4,7 +4,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
+namespace Bii\Core\View;
 /**
  * Description of View
  * @author tangyonghong <tangyonghong@kugou.net>
